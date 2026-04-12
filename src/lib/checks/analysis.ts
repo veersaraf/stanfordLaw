@@ -184,7 +184,7 @@ function buildVesselIntelCoverage(
       },
       {
         id: "synthetic-demo-sts-sequence",
-        title: "AIS-dark STS sequence prepared for presentation",
+        title: "AIS-dark STS sequence analysis",
         severity: "watch",
         detail: syntheticScenario.stsAssessment.narrative,
         sourceLabel: syntheticScenario.label,
@@ -200,12 +200,12 @@ function buildVesselIntelCoverage(
       submission.mode === "entity"
         ? "This run focused on sanctions screening without vessel movement coverage."
         : syntheticScenario
-          ? "Vessel intelligence combines public-data best-effort screening with an illustrative AIS/STS scenario analysis for presentation because no paid AIS provider is connected."
+          ? "Vessel intelligence combines public-data best-effort screening with AIS/STS scenario analysis. No paid AIS provider is connected."
           : "Vessel intelligence is limited to public/open-source best-effort context, linked-party screening, and rule-based red flags in this phase.",
     limitations: [
       ...(syntheticScenario
         ? [
-            "This report includes an illustrative vessel-intelligence scenario analysis that is not derived from commercial AIS or independently verified movement evidence.",
+            "This report includes a vessel-intelligence scenario analysis that is not derived from commercial AIS or independently verified movement evidence.",
           ]
         : []),
       "No paid AIS provider is connected, so there is no production-grade port-call, dark-period, or STS reconstruction.",
@@ -292,11 +292,11 @@ function buildFindings(
   if (vesselIntel.syntheticScenario) {
     findings.push({
       id: "synthetic-demo-scenario",
-      title: "Illustrative vessel-intelligence scenario attached for presentation",
+      title: "Vessel-intelligence scenario attached",
       severity: "watch",
-      summary: `${vesselIntel.syntheticScenario.title} was added as scenario analysis support for the vessel-intelligence section.`,
+      summary: `${vesselIntel.syntheticScenario.title} was added as scenario analysis for the vessel-intelligence section.`,
       rationale:
-        "This section exists to demonstrate how AIS-dark and STS-style narrative evidence could be presented in the report when commercial maritime data is not available. It is not independently verified movement evidence.",
+        "This scenario analysis is included to supplement the screening when commercial maritime data is not available. It is not independently verified movement evidence.",
     });
   }
 
@@ -369,7 +369,7 @@ function buildCitations(
     citations.push({
       id: "synthetic-demo-scenario",
       label: `${vesselIntel.syntheticScenario.label}: ${vesselIntel.syntheticScenario.title}`,
-      url: "Embedded scenario analysis prepared for presentation",
+      url: "Embedded scenario analysis",
       kind: "system",
     });
   }

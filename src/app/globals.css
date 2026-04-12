@@ -1,19 +1,21 @@
 @import "tailwindcss";
 
 :root {
-  --background: #fbfaf7;
-  --foreground: #18222a;
-  --navy: #163d53;
-  --ink: #18222a;
-  --muted: #5f6d75;
-  --line: #d9d0c2;
-  --surface: #f9f5ee;
-  --surface-strong: #efe4d1;
-  --accent: #ad5d2f;
-  --accent-soft: #f6dfcf;
-  --success: #1f6f57;
-  --warning: #a56b17;
-  --danger: #9b3827;
+  --background: #FAFAF8;
+  --foreground: #1C1C1C;
+  --navy: #317b52;
+  --ink: #317b52;
+  --muted: #6B6B6B;
+  --line: #E5E5E5;
+  --surface: #F3F3F1;
+  --surface-strong: #EAEAE8;
+  --accent: #209483;
+  --accent-soft: rgba(90, 205, 189, 0.12);
+  --highlight: #5acdbd;
+  --primary: #209483;
+  --success: #16a34a;
+  --warning: #ca8a04;
+  --danger: #dc2626;
 }
 
 @theme inline {
@@ -27,6 +29,8 @@
   --color-surface-strong: var(--surface-strong);
   --color-accent: var(--accent);
   --color-accent-soft: var(--accent-soft);
+  --color-highlight: var(--highlight);
+  --color-primary: var(--primary);
   --color-success: var(--success);
   --color-warning: var(--warning);
   --color-danger: var(--danger);
@@ -45,7 +49,7 @@ html {
 body {
   background: var(--background);
   color: var(--ink);
-  font-family: var(--font-body), sans-serif;
+  font-family: var(--font-body), system-ui, sans-serif;
 }
 
 a {
@@ -54,58 +58,63 @@ a {
 }
 
 ::selection {
-  background: rgba(173, 93, 47, 0.18);
+  background: rgba(90, 205, 189, 0.25);
 }
 
 .panel {
-  border: 1px solid rgba(217, 208, 194, 0.9);
-  background: rgba(255, 255, 255, 0.72);
-  box-shadow:
-    0 1px 0 rgba(255, 255, 255, 0.6) inset,
-    0 18px 44px rgba(22, 61, 83, 0.08);
-  backdrop-filter: blur(10px);
+  border: 1px solid var(--line);
+  background: var(--background);
 }
 
 .eyebrow {
-  letter-spacing: 0.24em;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
 }
 
 .field {
   width: 100%;
-  border-radius: 1.25rem;
-  border: 1px solid rgba(22, 61, 83, 0.12);
-  background: rgba(255, 255, 255, 0.84);
-  padding: 0.9rem 1rem;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  background: white;
+  padding: 0.65rem 0.85rem;
+  font-size: 0.9rem;
   color: var(--ink);
   transition:
-    border-color 160ms ease,
-    box-shadow 160ms ease,
-    background 160ms ease;
+    border-color 120ms ease,
+    box-shadow 120ms ease;
 }
 
 .field:focus {
   outline: none;
-  border-color: rgba(22, 61, 83, 0.45);
-  box-shadow: 0 0 0 4px rgba(22, 61, 83, 0.08);
-  background: white;
+  border-color: #209483;
+  box-shadow: 0 0 0 3px rgba(32, 148, 131, 0.12);
 }
 
 .field::placeholder {
-  color: rgba(95, 109, 117, 0.7);
+  color: rgba(107, 107, 107, 0.7);
 }
 
-.rich-card {
-  position: relative;
-  overflow: hidden;
+/* Step indicator animations */
+@keyframes step-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
 }
 
-.rich-card::after {
-  content: "";
-  position: absolute;
-  inset: auto -20% -50% 45%;
-  height: 13rem;
-  border-radius: 9999px;
-  background: radial-gradient(circle, rgba(173, 93, 47, 0.12), transparent 70%);
-  pointer-events: none;
+.step-active {
+  animation: step-pulse 2s ease-in-out infinite;
+}
+
+/* Tabular nums for counters */
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Fade in for results reveal */
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.5s ease-out;
 }

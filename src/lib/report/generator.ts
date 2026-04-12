@@ -573,7 +573,7 @@ function drawCoverPage(doc: PDFKit.PDFDocument, check: CheckRecord) {
 
   doc
     .save()
-    .roundedRect(doc.page.margins.left, 48, 148, 28, 14)
+    .roundedRect(doc.page.margins.left, 48, 158, 28, 14)
     .fill(palette.gold)
     .restore();
 
@@ -581,7 +581,7 @@ function drawCoverPage(doc: PDFKit.PDFDocument, check: CheckRecord) {
     .font("ReportSansBold")
     .fontSize(11)
     .fillColor(palette.navy)
-    .text("Hackathon Demo Brief", doc.page.margins.left + 18, 57);
+    .text("Sanctions Screening", doc.page.margins.left + 18, 57);
 
   doc
     .font("ReportSans")
@@ -603,7 +603,7 @@ function drawCoverPage(doc: PDFKit.PDFDocument, check: CheckRecord) {
     .fontSize(13)
     .fillColor("#D5E3ED")
     .text(
-      "Presentation-grade screening memo with sanctions evidence, source provenance, and vessel-context disclosures.",
+      "Screening memo with sanctions evidence, source provenance, and vessel-context disclosures.",
       doc.page.margins.left,
       188,
       {
@@ -725,7 +725,7 @@ function drawCoverPage(doc: PDFKit.PDFDocument, check: CheckRecord) {
     .fontSize(9)
     .fillColor(palette.muted)
     .text(
-      "Prepared for demo presentation. This PDF is intended to showcase workflow quality and evidence presentation, not replace legal judgment.",
+      "This report does not constitute legal advice and is not a substitute for independent legal judgment.",
       doc.page.margins.left,
       doc.page.height - 42,
       {
@@ -855,26 +855,38 @@ function buildScreeningSchemaRows(check: CheckRecord) {
   }
 
   if (check.mode === "pdf") {
+    const pdfOperator = check.pdf?.parsedFields.operatorName;
+    const pdfManager = check.pdf?.parsedFields.managerName;
+    const pdfOperatorManagerValue =
+      pdfOperator && pdfManager && pdfOperator.toLowerCase() === pdfManager.toLowerCase()
+        ? pdfOperator
+        : [pdfOperator, pdfManager].filter(Boolean).join(" / ") || "Not supplied";
+
     return [
       ["Matter Title", check.title, "Document-led screening reference"],
       ["Uploaded File", check.pdf?.fileName ?? "Not supplied", "Source document"],
       ["Resolved Vessel", check.pdf?.parsedFields.vesselName ?? "Not supplied", "Parsed from upload"],
       ["Resolved IMO", check.pdf?.parsedFields.imoNumber ?? "Not supplied", "Strong vessel identifier"],
       ["Resolved Owner", check.pdf?.parsedFields.ownerName ?? "Not supplied", "Parsed control-party name"],
-      ["Resolved Operator", check.pdf?.parsedFields.operatorName ?? "Not supplied", "Parsed operating party name"],
-      ["Resolved Manager", check.pdf?.parsedFields.managerName ?? "Not supplied", "Parsed management party name"],
+      ["Operator / Manager", pdfOperatorManagerValue, "Operating and management party"],
       ["Resolved Seller", check.pdf?.parsedFields.sellerName ?? "Not supplied", "Parsed counterparty"],
       ["Resolved Buyer", check.pdf?.parsedFields.buyerName ?? "Not supplied", "Parsed counterparty"],
     ];
   }
+
+  const operator = check.vessel?.operatorName;
+  const manager = check.vessel?.managerName;
+  const operatorManagerValue =
+    operator && manager && operator.toLowerCase() === manager.toLowerCase()
+      ? operator
+      : [operator, manager].filter(Boolean).join(" / ") || "Not supplied";
 
   return [
     ["Matter Title", check.title, "Internal screening reference"],
     ["Vessel Name", check.vessel?.vesselName ?? "Not supplied", "Optional when IMO is available"],
     ["IMO Number", check.vessel?.imoNumber ?? "Not supplied", "Primary maritime identifier"],
     ["Owner", check.vessel?.ownerName ?? "Not supplied", "Registered or beneficial owner screened when present"],
-    ["Operator", check.vessel?.operatorName ?? "Not supplied", "Commercial or operating party screened when present"],
-    ["Manager", check.vessel?.managerName ?? "Not supplied", "Technical or commercial manager screened when present"],
+    ["Operator / Manager", operatorManagerValue, "Operating and management party screened when present"],
     ["Flag", check.vessel?.flag ?? "Not supplied", "Jurisdictional context"],
     ["Registry", check.vessel?.registry ?? "Not supplied", "Registration context"],
     ["Seller", check.vessel?.sellerName ?? "Not supplied", "Counterparty screened when present"],
@@ -1050,11 +1062,11 @@ function drawSyntheticDashboard(doc: PDFKit.PDFDocument, scenario: VesselIntelSy
   const chartHeight = 196;
   const bottomWidth = (panelWidth - gap) / 2;
 
-  ensureSpace(doc, 640);
+  doc.addPage();
   drawSectionHeader(
     doc,
     "Maritime Activity Dashboard",
-    "Illustrative analytics rendered from the Arctic scenario sequence",
+    "Analytics rendered from the scenario sequence",
   );
 
   const cardY = doc.y;
@@ -1085,7 +1097,7 @@ function drawSyntheticDashboard(doc: PDFKit.PDFDocument, scenario: VesselIntelSy
     height: cardHeight,
     label: "Reappearance Shift",
     value: displacement,
-    detail: "Scenario displacement between the dark waypoint and the later transmitted position.",
+    detail: "Displacement between the dark waypoint and the later transmitted position.",
     tone: palette.navySoft,
   });
   drawInsightCard(doc, {
@@ -1095,7 +1107,7 @@ function drawSyntheticDashboard(doc: PDFKit.PDFDocument, scenario: VesselIntelSy
     height: cardHeight,
     label: "Low-Speed Cluster",
     value: lowSpeedSignals,
-    detail: "Events below 4 knots during the rendezvous phase in the staged scenario.",
+    detail: "Events below 4 knots during the rendezvous phase.",
     tone: palette.success,
   });
 
@@ -1106,7 +1118,7 @@ function drawSyntheticDashboard(doc: PDFKit.PDFDocument, scenario: VesselIntelSy
     width: panelWidth,
     height: routeHeight,
     title: "Arctic Route Plot",
-    subtitle: "Plotted from staged waypoint coordinates supplied to the scenario analysis",
+    subtitle: "Plotted from waypoint coordinates in the scenario analysis",
     fill: "#F9FCFE",
   });
   const minLongitude = Math.min(...data.map((event) => event.longitude)) - 1.5;
@@ -1453,7 +1465,7 @@ function drawSyntheticScenarioSection(doc: PDFKit.PDFDocument, check: CheckRecor
   drawSectionHeader(
     doc,
     scenario.label,
-    "Vessel-intelligence scenario analysis rendered for presentation",
+    "Vessel-intelligence scenario analysis",
   );
 
   drawCalloutBox(doc, {
@@ -1471,7 +1483,7 @@ function drawSyntheticScenarioSection(doc: PDFKit.PDFDocument, check: CheckRecor
   drawTable(
     doc,
     "Counterparty Matrix",
-    "Vessels staged into the scenario analysis",
+    "Vessels involved in the scenario analysis",
     [
       { key: "vessel", header: "Vessel", width: 88 },
       { key: "imo", header: "IMO", width: 64 },
@@ -1484,7 +1496,7 @@ function drawSyntheticScenarioSection(doc: PDFKit.PDFDocument, check: CheckRecor
   drawTable(
     doc,
     "AIS Timeline",
-    "Staged timeline used to illustrate rendezvous, AIS dark activity, and directional reversal",
+    "Timeline showing rendezvous, AIS dark activity, and directional reversal",
     [
       { key: "timestamp", header: "Timestamp", width: 86 },
       { key: "vessel", header: "Vessel", width: 92 },
@@ -1505,13 +1517,13 @@ function drawSyntheticScenarioSection(doc: PDFKit.PDFDocument, check: CheckRecor
   drawSectionHeader(
     doc,
     "STS Assessment",
-    "Presentation narrative paired with scenario provenance",
+    "Assessment narrative paired with scenario provenance",
   );
 
   drawCalloutBox(doc, {
     eyebrow: `${scenario.stsAssessment.area} • ${scenario.stsAssessment.window}`,
-    title: "Arctic rendezvous narrative",
-    body: `${scenario.stsAssessment.narrative} Confidence label: ${scenario.stsAssessment.confidence.toUpperCase()} ONLY.`,
+    title: "Rendezvous narrative",
+    body: `${scenario.stsAssessment.narrative} Confidence: ${scenario.stsAssessment.confidence.toUpperCase()}.`,
     fill: "#FFF7E3",
     stroke: palette.warning,
     titleColor: palette.navy,
@@ -1544,7 +1556,7 @@ export function generateDraftReportSections(check: CheckRecord): ReportSection[]
     .join("; ");
   const syntheticScenario = check.vesselIntel.syntheticScenario;
   const syntheticLine = syntheticScenario
-    ? ` An illustrative vessel-intelligence scenario titled "${syntheticScenario.title}" is included for presentation. ${syntheticScenario.stsAssessment.narrative} Method note: ${syntheticScenario.legalNotice}`
+    ? ` A vessel-intelligence scenario titled "${syntheticScenario.title}" is included. ${syntheticScenario.stsAssessment.narrative} Note: ${syntheticScenario.legalNotice}`
     : "";
 
   return [
@@ -1595,11 +1607,13 @@ export async function generateDraftReportDocument(check: CheckRecord) {
       Title: check.title,
       Author: "Stanford Law Maritime Sanctions Desk",
       Subject: "Maritime sanctions screening report",
-      Keywords: "sanctions, vessel intelligence, maritime compliance, demo",
+      Keywords: "sanctions, vessel intelligence, maritime compliance",
     },
-    autoFirstPage: true,
+    autoFirstPage: false,
   });
   await registerReportFonts(doc);
+  doc.addPage();
+  doc.font(reportFontNames.sans);
   const pdfBufferPromise = createPdfBuffer(doc);
   drawCoverPage(doc, check);
   doc.addPage();
