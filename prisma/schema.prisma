@@ -1,0 +1,123 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum CheckMode {
+  vessel
+  entity
+  pdf
+}
+
+enum CheckStatus {
+  draft
+  running
+  completed
+  failed
+}
+
+enum SanctionsSource {
+  ofac
+  eu
+}
+
+enum SourceMode {
+  official
+  fallback
+}
+
+enum MatchStrength {
+  exact
+  strong
+  review
+}
+
+model Check {
+  id        String      @id @default(cuid())
+  title     String
+  mode      CheckMode
+  status    CheckStatus @default(running)
+  subjects  Json
+  payload   Json
+  pipeline  Json
+  findings  Json
+  report    Json
+  vesselIntel Json
+  resultSummary Json
+  sourceVersions Json
+  citations Json
+  agentRun  Json?
+  docxPath  String?
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+  matches   MatchCandidate[]
+
+  @@index([mode, createdAt(sort: Desc)])
+  @@index([status, createdAt(sort: Desc)])
+}
+
+model SourceVersion {
+  id          String          @id @default(cuid())
+  source      SanctionsSource
+  sourceMode  SourceMode
+  label       String
+  url         String
+  checksum    String
+  fetchedAt   DateTime        @default(now())
+  publishedAt DateTime?
+  entryCount  Int             @default(0)
+  metadata    Json?
+  entries     SanctionsEntry[]
+  matches     MatchCandidate[]
+
+  @@unique([source, sourceMode, checksum])
+  @@index([source, fetchedAt(sort: Desc)])
+}
+
+model SanctionsEntry {
+  id                String           @id @default(cuid())
+  sourceVersionId   String
+  sourceVersion     SourceVersion    @relation(fields: [sourceVersionId], references: [id], onDelete: Cascade)
+  externalId        String
+  schema            String
+  primaryName       String
+  normalizedName    String
+  aliases           Json
+  normalizedAliases Json
+  countries         Json
+  addresses         Json
+  identifiers       Json
+  birthDates        Json
+  sanctionsPrograms Json
+  raw               Json
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+  matches           MatchCandidate[]
+
+  @@unique([sourceVersionId, externalId])
+  @@index([normalizedName])
+}
+
+model MatchCandidate {
+  id              String         @id @default(cuid())
+  checkId         String
+  check           Check          @relation(fields: [checkId], references: [id], onDelete: Cascade)
+  sanctionsEntryId String
+  sanctionsEntry  SanctionsEntry @relation(fields: [sanctionsEntryId], references: [id], onDelete: Cascade)
+  sourceVersionId String
+  sourceVersion   SourceVersion  @relation(fields: [sourceVersionId], references: [id], onDelete: Cascade)
+  subjectLabel    String
+  matchedField    String
+  matchedValue    String
+  score           Float
+  strength        MatchStrength
+  reasons         Json
+  isSelected      Boolean        @default(false)
+  createdAt       DateTime       @default(now())
+
+  @@index([checkId, score(sort: Desc)])
+  @@index([sanctionsEntryId])
+}

@@ -30,7 +30,7 @@ A SaaS web application that enables maritime lawyers, ship brokers, ship owners,
 
 ---
 
-## 3. Input — Manual Data Entry (No PDF Upload)
+## 3. Input — Manual Data Entry + PDF Upload
 
 ### Check Type A: Vessel + Transaction Check
 Fields from BIMCO Ship Sale 22 form:
@@ -59,6 +59,11 @@ Optional enrichment fields:
 - Country of incorporation/nationality
 - Date of birth (for individuals)
 - Known aliases
+
+### Check Type C: PDF-Led Intake
+- Upload a single transaction PDF
+- Extract vessel and counterparty details where possible
+- Let the reviewer supplement any missing fields before or after extraction
 
 ### No bulk upload — one check at a time.
 
@@ -244,17 +249,17 @@ Optional enrichment fields:
 ### Stack
 | Layer | Technology | Rationale |
 |---|---|---|
-| **Frontend** | Next.js 14 + TypeScript + Tailwind CSS | Fast SaaS development, SSR for SEO |
+| **Frontend** | Next.js 16 + TypeScript + Tailwind CSS | Fast SaaS development, SSR for SEO |
 | **Backend** | Next.js API routes + Python worker services | Next.js for API, Python for data processing/NLP |
 | **Database** | PostgreSQL + pgvector | Relational data + fuzzy text search |
 | **Task Queue** | Redis + BullMQ | Orchestrate long-running check agents |
-| **Auth** | NextAuth.js (or Clerk) | Single-user accounts, simple auth |
 | **File Generation** | python-docx | Word report generation |
 | **Hosting** | Vercel (frontend) + Railway/Fly.io (Python workers) | Low cost, scalable |
 | **Sanctions Data** | Daily cron job downloads → PostgreSQL | Normalized local copies |
+| **Agent Runtime** | Anthropic Claude Managed Agents | Session-based orchestration in managed infrastructure |
 
 ### Agent Architecture
-Each check spawns **autonomous sandbox agents** that run in parallel:
+Each check can spawn **Anthropic Claude Managed Agent sessions** for long-running orchestration, with a local prototype fallback path during development:
 
 ```
 User submits check
@@ -329,22 +334,16 @@ User submits check
 
 ## 10. Implementation Phases
 
-### Phase 1 — MVP (Weeks 1-4)
-**Goal:** Working sanctions checker with basic vessel + entity checks
+### Phase 1 — MVP + Vessel Intelligence Foundation (Weeks 1-7)
+**Goal:** Working sanctions checker with vessel intelligence included from the first build
 
 - [ ] Project scaffolding (Next.js + PostgreSQL + Redis)
-- [ ] Authentication (single-user accounts)
 - [ ] Manual data entry forms (vessel check + entity check)
+- [ ] PDF upload + extraction intake path
 - [ ] Sanctions list ingestion pipeline (OFAC, EU, UN, UK)
 - [ ] Daily refresh cron job for sanctions lists
 - [ ] Fuzzy name matching engine (high sensitivity)
 - [ ] Basic sanctions check results page
-- [ ] Word (.docx) report generation — sanctions section only
-- [ ] Search history (save & revisit)
-
-### Phase 2 — Vessel Intelligence (Weeks 5-7)
-**Goal:** AIS tracking, port history, dark period detection
-
 - [ ] Spire Maritime API integration
 - [ ] Port call history (5 years)
 - [ ] AIS dark period detection
@@ -352,9 +351,11 @@ User submits check
 - [ ] Red-flag waters entry detection
 - [ ] Vessel ownership chain resolution (owner, beneficial owner, operator, manager)
 - [ ] Cross-check all vessel-related entities against sanctions
+- [ ] Word (.docx) report generation — sanctions section only
+- [ ] Search history (save & revisit)
 - [ ] Add vessel intelligence section to report
 
-### Phase 3 — Pre-Sanctions Intelligence (Weeks 8-11)
+### Phase 2 — Pre-Sanctions Intelligence (Weeks 8-11)
 **Goal:** The differentiator — adverse media, network analysis, PEP, ICIJ
 
 - [ ] Adverse media search engine (Google News + GDELT + OCCRP)
@@ -367,7 +368,7 @@ User submits check
 - [ ] Delisted entity tracking
 - [ ] Add pre-sanctions intelligence section to report
 
-### Phase 4 — Polish & Launch (Weeks 12-14)
+### Phase 3 — Polish & Launch (Weeks 12-14)
 **Goal:** Production-ready SaaS
 
 - [ ] Agent orchestration with progress indicators
@@ -384,7 +385,7 @@ User submits check
 
 | Decision | Choice | Rationale |
 |---|---|---|
-| PDF upload | No | Manual entry only, per requirements |
+| PDF upload | Yes | Manual entry plus document-led intake |
 | Bulk checks | No | One check at a time |
 | Risk rating | No | Lawyer makes the call, system just provides data |
 | Ongoing monitoring | No | One-time checks only |
@@ -404,16 +405,15 @@ StanfordLaw/
 ├── PLAN.md                          # This file
 ├── README.md
 ├── package.json
-├── next.config.js
-├── tailwind.config.js
+├── next.config.ts
 ├── tsconfig.json
+├── prisma.config.ts
 ├── prisma/
 │   └── schema.prisma                # Database schema
 ├── src/
 │   ├── app/                         # Next.js app router
 │   │   ├── layout.tsx
 │   │   ├── page.tsx                 # Landing / dashboard
-│   │   ├── auth/                    # Login / signup
 │   │   ├── checks/
 │   │   │   ├── new/                 # New check forms
 │   │   │   │   ├── vessel/          # Vessel + transaction check

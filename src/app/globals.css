@@ -1,0 +1,111 @@
+@import "tailwindcss";
+
+:root {
+  --background: #fbfaf7;
+  --foreground: #18222a;
+  --navy: #163d53;
+  --ink: #18222a;
+  --muted: #5f6d75;
+  --line: #d9d0c2;
+  --surface: #f9f5ee;
+  --surface-strong: #efe4d1;
+  --accent: #ad5d2f;
+  --accent-soft: #f6dfcf;
+  --success: #1f6f57;
+  --warning: #a56b17;
+  --danger: #9b3827;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-navy: var(--navy);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-surface: var(--surface);
+  --color-surface-strong: var(--surface-strong);
+  --color-accent: var(--accent);
+  --color-accent-soft: var(--accent-soft);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-danger: var(--danger);
+  --font-sans: var(--font-body);
+  --font-serif: var(--font-editorial);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--background);
+}
+
+body {
+  background: var(--background);
+  color: var(--ink);
+  font-family: var(--font-body), sans-serif;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+::selection {
+  background: rgba(173, 93, 47, 0.18);
+}
+
+.panel {
+  border: 1px solid rgba(217, 208, 194, 0.9);
+  background: rgba(255, 255, 255, 0.72);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.6) inset,
+    0 18px 44px rgba(22, 61, 83, 0.08);
+  backdrop-filter: blur(10px);
+}
+
+.eyebrow {
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+}
+
+.field {
+  width: 100%;
+  border-radius: 1.25rem;
+  border: 1px solid rgba(22, 61, 83, 0.12);
+  background: rgba(255, 255, 255, 0.84);
+  padding: 0.9rem 1rem;
+  color: var(--ink);
+  transition:
+    border-color 160ms ease,
+    box-shadow 160ms ease,
+    background 160ms ease;
+}
+
+.field:focus {
+  outline: none;
+  border-color: rgba(22, 61, 83, 0.45);
+  box-shadow: 0 0 0 4px rgba(22, 61, 83, 0.08);
+  background: white;
+}
+
+.field::placeholder {
+  color: rgba(95, 109, 117, 0.7);
+}
+
+.rich-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.rich-card::after {
+  content: "";
+  position: absolute;
+  inset: auto -20% -50% 45%;
+  height: 13rem;
+  border-radius: 9999px;
+  background: radial-gradient(circle, rgba(173, 93, 47, 0.12), transparent 70%);
+  pointer-events: none;
+}
