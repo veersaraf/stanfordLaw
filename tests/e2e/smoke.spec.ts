@@ -21,20 +21,13 @@ test.describe("maritime sanctions desk — smoke", () => {
     expect(response?.ok()).toBeTruthy();
   });
 
-  test("header exposes Instructions, Build Notes, History, and Start Check links", async ({ page }) => {
+  test("header exposes Instructions, Build Notes, and History links", async ({ page }) => {
     await page.goto("/");
     const header = page.locator("header");
     await expect(header.getByRole("link", { name: /instructions/i })).toHaveAttribute("href", "/instructions");
     await expect(header.getByRole("link", { name: /build notes/i })).toHaveAttribute("href", "/build-notes");
     await expect(header.getByRole("link", { name: /history/i })).toHaveAttribute("href", "/history");
-    await expect(header.getByRole("link", { name: /start check/i })).toHaveAttribute("href", "/checks/new");
-  });
-
-  test("header Start Check button navigates to the intake form", async ({ page }) => {
-    await page.goto("/");
-    await page.locator("header").getByRole("link", { name: /start check/i }).click();
-    await expect(page).toHaveURL(/\/checks\/new/);
-    await expect(page.locator("form")).toBeVisible();
+    await expect(header.getByRole("link", { name: /^start check$/i })).toHaveCount(0);
   });
 
   test("instructions page links to the new-check flow", async ({ page }) => {

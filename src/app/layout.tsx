@@ -69,12 +69,6 @@ export default function RootLayout({
               >
                 History
               </Link>
-              <Link
-                href="/checks/new"
-                className="rounded-full border border-sky-300/70 bg-sky-200 px-4 py-2 text-navy shadow-[0_4px_14px_rgba(56,189,248,0.25)] transition hover:bg-sky-300"
-              >
-                Start Check
-              </Link>
             </nav>
           </div>
         </header>
