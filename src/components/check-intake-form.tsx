@@ -3,9 +3,14 @@
 import { useActionState, useState } from "react";
 import { FileText, Radar, ShipWheel } from "lucide-react";
 import { submitCheck } from "@/app/checks/new/actions";
-import { initialIntakeActionState } from "@/lib/checks/schema";
+import {
+  IMO_NUMBER_ERROR,
+  initialIntakeActionState,
+  isValidImoNumber,
+} from "@/lib/checks/schema";
 import type { CheckMode } from "@/lib/checks/types";
 import { cn } from "@/lib/utils";
+import { CountryCombobox } from "@/components/country-combobox";
 import { SubmitButton } from "@/components/submit-button";
 
 const modes: Array<{
@@ -70,6 +75,7 @@ function Label({
 export function CheckIntakeForm() {
   const [state, formAction] = useActionState(submitCheck, initialIntakeActionState);
   const [mode, setMode] = useState<CheckMode>(state.mode);
+  const [imoError, setImoError] = useState<string | null>(null);
 
   return (
     <form action={formAction} className="space-y-8">
@@ -143,8 +149,30 @@ export function CheckIntakeForm() {
 
           <div>
             <Label htmlFor="imoNumber">IMO number (optional if vessel name provided)</Label>
-            <input id="imoNumber" name="imoNumber" className="field" placeholder="1234567" />
-            <FieldError errors={state.fieldErrors} name="imoNumber" />
+            <input
+              id="imoNumber"
+              name="imoNumber"
+              className="field"
+              placeholder="1234567"
+              inputMode="numeric"
+              aria-invalid={imoError ? true : undefined}
+              aria-describedby={imoError ? "imoNumber-error" : undefined}
+              onBlur={(event) => {
+                setImoError(isValidImoNumber(event.target.value) ? null : IMO_NUMBER_ERROR);
+              }}
+              onChange={(event) => {
+                if (imoError && isValidImoNumber(event.target.value)) {
+                  setImoError(null);
+                }
+              }}
+            />
+            {imoError ? (
+              <p id="imoNumber-error" className="mt-2 text-sm text-danger">
+                {imoError}
+              </p>
+            ) : (
+              <FieldError errors={state.fieldErrors} name="imoNumber" />
+            )}
           </div>
 
           <div>
@@ -176,7 +204,7 @@ export function CheckIntakeForm() {
 
           <div>
             <Label htmlFor="flag">Flag</Label>
-            <input id="flag" name="flag" className="field" placeholder="Marshall Islands" />
+            <CountryCombobox id="flag" name="flag" placeholder="Marshall Islands" />
           </div>
 
           <div>

@@ -3,13 +3,17 @@ import type { CheckMode } from "@/lib/checks/types";
 
 const optionalString = z.string().trim().optional().or(z.literal(""));
 
+export const IMO_NUMBER_ERROR = "IMO number should be a 7-digit value.";
+
+export function isValidImoNumber(value: string): boolean {
+  const trimmed = value.trim();
+  return trimmed.length === 0 || /^\d{7}$/.test(trimmed);
+}
+
 export const vesselFormSchema = z.object({
   title: optionalString,
   vesselName: optionalString,
-  imoNumber: optionalString.refine(
-    (value) => !value || /^\d{7}$/.test(value),
-    "IMO number should be a 7-digit value.",
-  ),
+  imoNumber: optionalString.refine((value) => isValidImoNumber(value ?? ""), IMO_NUMBER_ERROR),
   flag: optionalString,
   registry: optionalString,
   ownerName: optionalString,

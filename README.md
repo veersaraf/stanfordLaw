@@ -36,6 +36,27 @@ EU_FSF_COOKIE=""
 EU_FSF_AUTHORIZATION=""
 ```
 
+## Tests
+
+Unit + integration (Jest, Node environment, no DB or network required — external calls are mocked):
+
+```bash
+npm test                 # runs all jest suites
+npm run test:unit        # pure logic: normalize, matcher, analysis, parser, schema, format
+npm run test:integration # mocked orchestrator pipeline and OFAC/EU importer parsers
+npm run test:coverage    # writes coverage/ (src/lib excluding db.ts and queue.ts)
+```
+
+End-to-end smoke tests (Playwright against a running app — needs Postgres reachable via `DATABASE_URL`):
+
+```bash
+npm run test:e2e:install # one-time Chromium browser download
+npm run test:e2e         # boots `next dev` via playwright.config.ts and runs tests/e2e/*
+npm run test:e2e:smoke   # just the smoke spec
+```
+
+Playwright auto-starts `next dev` on port 3000 (override with `PLAYWRIGHT_PORT` or `PLAYWRIGHT_BASE_URL`). Set `PLAYWRIGHT_SKIP_WEBSERVER=1` to point at an already-running server.
+
 ## Phase One shape
 
 Phase One now covers formal sanctions through vessel intelligence, with PDF upload as a first-class intake path. Vessel intelligence is intentionally limited to public/open-source best effort in this version and discloses that limitation in the UI and report output.

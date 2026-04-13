@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Cormorant_Garamond, Source_Sans_3 } from "next/font/google";
 import Link from "next/link";
+import "flag-icons/css/flag-icons.min.css";
 import "./globals.css";
 
 const editorial = Cormorant_Garamond({
@@ -45,16 +46,28 @@ export default function RootLayout({
             </Link>
             <nav className="flex items-center gap-2 text-sm font-semibold text-navy/80">
               <Link
-                href="/checks/new"
-                className="rounded-full border border-line bg-white/75 px-4 py-2 transition hover:border-navy/30 hover:bg-white"
+                href="/instructions"
+                className="rounded-full px-4 py-2 transition hover:bg-white/70"
               >
-                New Check
+                Instructions
+              </Link>
+              <Link
+                href="/build-notes"
+                className="rounded-full px-4 py-2 transition hover:bg-white/70"
+              >
+                Build Notes
               </Link>
               <Link
                 href="/history"
                 className="rounded-full px-4 py-2 transition hover:bg-white/70"
               >
                 History
+              </Link>
+              <Link
+                href="/checks/new"
+                className="rounded-full border border-sky-300/70 bg-sky-200 px-4 py-2 text-navy shadow-[0_4px_14px_rgba(56,189,248,0.25)] transition hover:bg-sky-300"
+              >
+                Start Check
               </Link>
             </nav>
           </div>

@@ -115,7 +115,7 @@ export default async function Home() {
         ))}
       </section>
 
-      <section className="grid gap-6 lg:grid-cols-[1.05fr_0.95fr]">
+      <section>
         <article className="panel rounded-[2rem] p-7">
           <div className="flex items-center justify-between gap-4">
             <div>
@@ -151,18 +151,6 @@ export default async function Home() {
                 No checks yet. Start with a vessel transaction, an entity screen, or a PDF upload.
               </div>
             )}
-          </div>
-        </article>
-        <article className="panel rounded-[2rem] p-7">
-          <p className="eyebrow text-xs font-semibold text-muted">What This Build Covers</p>
-          <h2 className="mt-3 font-serif text-3xl text-navy">Phase One Boundaries</h2>
-          <div className="mt-6 space-y-4 text-base leading-7 text-muted">
-            <p>
-              Intake now assumes both manual entry and PDF uploads. The current implementation stores submissions in Postgres, extracts text from uploaded PDFs, imports sanctions source versions, and saves explainable match candidates.
-            </p>
-            <p>
-              Vessel intelligence remains best-effort public-data coverage without a paid AIS provider, and EU official direct automation can be upgraded as soon as you provide the session credential.
-            </p>
           </div>
         </article>
       </section>
