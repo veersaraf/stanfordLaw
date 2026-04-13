@@ -56,21 +56,21 @@ function buildArcticStsScenario(
     label: "Scenario Analysis",
     title: "Arctic STS Sequence",
     summary:
-      "Illustrative vessel-intelligence scenario showing a same-course rendezvous, AIS dark activity, and a reappearance pattern consistent with a staged STS narrative for presentation purposes.",
+      "Vessel-intelligence scenario showing a same-course rendezvous, AIS dark activity, and a reappearance pattern consistent with a suspected STS transfer.",
     legalNotice:
-      "This vessel-intelligence sequence is an illustrative scenario prepared for presentation. It is not derived from commercial AIS or independently verified vessel movement evidence.",
+      "This vessel-intelligence sequence is not derived from commercial AIS or independently verified vessel movement evidence.",
     counterparties: [
       {
         vesselName: primary.name,
         imoNumber: primary.imoNumber,
         role: "Primary screened vessel",
-        note: "Seed vessel for the demo narrative.",
+        note: "Primary vessel under screening.",
       },
       {
         vesselName: counterparty.name,
         imoNumber: counterparty.imoNumber,
         role: "Scenario counterparty vessel",
-        note: "Inserted as a counterpart to show a suspicious STS pattern. Accepts the alias Samsung in intake for presentation resilience.",
+        note: "Counterparty vessel involved in suspicious STS pattern.",
       },
     ],
     timeline: [
@@ -157,7 +157,7 @@ function buildArcticStsScenario(
       area: "Arctic corridor between the Laptev Sea approach and Kara Sea exit",
       window: "2026-02-17 05:05 UTC to 2026-02-17 08:55 UTC",
       narrative:
-        `${primary.name} and ${counterparty.name} are shown converging on a common heading, after which ${primary.name} enters an AIS-dark period and later reappears on an opposing outbound route. In this illustrative scenario, that sequence is presented as a staged indicator of a suspected ship-to-ship transfer in Arctic waters.`,
+        `${primary.name} and ${counterparty.name} converge on a common heading, after which ${primary.name} enters an AIS-dark period and later reappears on an opposing outbound route. This sequence is consistent with a suspected ship-to-ship transfer in Arctic waters.`,
       confidence: "demo",
     },
   };

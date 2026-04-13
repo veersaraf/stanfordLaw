@@ -1,158 +1,132 @@
 import Link from "next/link";
-import {
-  ArrowRight,
-  FileUp,
-  Gavel,
-  Radar,
-  Scale,
-  ShipWheel,
-} from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { formatDateTime, formatMode } from "@/lib/format";
 import { listChecks } from "@/lib/checks/repository";
 
 export const dynamic = "force-dynamic";
 
-const laneCards = [
-  {
-    title: "Formal Sanctions",
-    copy: "OFAC is imported from the official source and EU runs official-first with fallback-ready provenance.",
-    icon: Scale,
-  },
-  {
-    title: "Vessel Intelligence",
-    copy: "Best-effort public-data vessel context, linked-party checks, and explicit coverage limits for legal review.",
-    icon: ShipWheel,
-  },
-  {
-    title: "PDF-Led Intake",
-    copy: "Upload transaction documents, extract text, and normalize vessel and party details into the workflow.",
-    icon: FileUp,
-  },
-];
-
 export default async function Home() {
   const checks = await listChecks();
-  const recent = checks.slice(0, 4);
+  const recent = checks.slice(0, 5);
   const vesselCount = checks.filter(
     (check) => check.mode === "vessel" || check.mode === "pdf",
   ).length;
 
   return (
-    <div className="flex flex-col gap-10">
-      <section className="grid gap-6 lg:grid-cols-[1.35fr_0.9fr]">
-        <div className="panel rich-card rounded-[2rem] p-8 lg:p-10">
-          <div className="mb-8 flex flex-wrap items-center gap-3">
-            <span className="eyebrow rounded-full border border-navy/15 bg-white/70 px-4 py-2 text-[11px] font-semibold text-navy/75">
-              Phase One In Build
-            </span>
-            <span className="eyebrow rounded-full bg-accent-soft px-4 py-2 text-[11px] font-semibold text-accent">
-              PDF Upload Included
-            </span>
-          </div>
-          <div className="max-w-3xl">
-            <p className="eyebrow mb-4 text-xs font-semibold text-navy/70">
-              Maritime due diligence workspace
-            </p>
-            <h1 className="max-w-4xl font-serif text-5xl leading-[0.95] tracking-tight text-navy sm:text-6xl lg:text-7xl">
-              Sanctions checks, vessel intelligence, and transaction intake in one legal workflow.
-            </h1>
-            <p className="mt-6 max-w-2xl text-lg leading-8 text-muted sm:text-xl">
-              This build now covers the Phase One span you set: formal sanctions through vessel intelligence, with manual entry and PDF-led intake feeding the same review pipeline.
-            </p>
-          </div>
-          <div className="mt-10 flex flex-wrap gap-4">
-            <Link
-              href="/checks/new"
-              className="inline-flex items-center gap-2 rounded-full bg-navy px-6 py-3 text-sm font-semibold text-white transition hover:bg-navy/90"
-            >
-              Start A Check
-              <ArrowRight className="h-4 w-4" />
-            </Link>
-            <Link
-              href="/history"
-              className="inline-flex items-center gap-2 rounded-full border border-line bg-white/75 px-6 py-3 text-sm font-semibold text-navy transition hover:border-navy/25 hover:bg-white"
-            >
-              Review Prior Runs
-            </Link>
-          </div>
-        </div>
-        <div className="panel rounded-[2rem] p-6 lg:p-8">
-          <div className="flex items-start justify-between">
-            <div>
-              <p className="eyebrow text-xs font-semibold text-muted">Workspace Pulse</p>
-              <h2 className="mt-3 font-serif text-3xl text-navy">Live Prototype Snapshot</h2>
-            </div>
-            <Radar className="h-8 w-8 text-accent" />
-          </div>
-          <div className="mt-8 grid gap-4 sm:grid-cols-2">
-            <div className="rounded-[1.5rem] border border-line/90 bg-white/85 p-5">
-              <p className="text-sm text-muted">Checks Logged</p>
-              <p className="mt-2 text-4xl font-semibold text-navy">{checks.length}</p>
-            </div>
-            <div className="rounded-[1.5rem] border border-line/90 bg-white/85 p-5">
-              <p className="text-sm text-muted">Vessel Lanes</p>
-              <p className="mt-2 text-4xl font-semibold text-navy">{vesselCount}</p>
-            </div>
-            <div className="rounded-[1.5rem] border border-line/90 bg-white/85 p-5 sm:col-span-2">
-              <p className="text-sm text-muted">Current orchestration</p>
-              <p className="mt-2 text-lg leading-7 text-ink">
-                Live sanctions ingestion is active now, and Anthropic Managed Agents can be turned on with environment credentials for session-backed runs.
-              </p>
-            </div>
-          </div>
+    <div className="flex flex-col gap-12">
+      {/* Hero */}
+      <section className="flex flex-col items-center pt-8 text-center">
+        <svg width="48" height="48" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" className="mb-6">
+          <path d="M6 8L16 4L26 8V18C26 23.5 21.5 28 16 28C10.5 28 6 23.5 6 18V8Z" stroke="#1C1C1C" strokeWidth="1.5" strokeLinejoin="round"/>
+          <path d="M12 16L15 19L21 13" stroke="#1C1C1C" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
+        <h1 className="font-serif text-[2.75rem] leading-[1] tracking-[-0.02em] text-ink">
+          Everos
+        </h1>
+        <p className="mt-4 max-w-md text-base leading-7 text-muted">
+          Screen vessels, entities, and transaction documents against live sanctions data. Generate compliance reports in minutes.
+        </p>
+        <div className="mt-8 flex items-center gap-3">
+          <Link
+            href="/checks/new"
+            className="inline-flex items-center gap-2 rounded-lg border border-primary bg-white px-5 py-2.5 text-sm font-medium text-primary shadow-sm transition hover:bg-primary hover:text-white"
+          >
+            Start a check
+            <ArrowRight className="h-4 w-4" />
+          </Link>
+          <Link
+            href="/history"
+            className="inline-flex items-center gap-2 rounded-lg border border-line px-5 py-2.5 text-sm font-medium text-ink transition hover:bg-surface"
+          >
+            View history
+          </Link>
         </div>
       </section>
 
-      <section className="grid gap-5 lg:grid-cols-3">
-        {laneCards.map(({ title, copy, icon: Icon }) => (
-          <article key={title} className="panel rounded-[1.75rem] p-6">
-            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-navy/8 text-navy">
-              <Icon className="h-5 w-5" />
-            </div>
-            <h2 className="mt-5 font-serif text-3xl leading-tight text-navy">{title}</h2>
-            <p className="mt-3 text-base leading-7 text-muted">{copy}</p>
-          </article>
-        ))}
+      {/* Stats */}
+      <section className="grid grid-cols-3 gap-px overflow-hidden rounded-xl border border-line bg-line">
+        <div className="bg-background p-5">
+          <p className="text-sm text-muted">Checks run</p>
+          <p className="mt-1 text-2xl font-semibold text-ink">{checks.length}</p>
+        </div>
+        <div className="bg-background p-5">
+          <p className="text-sm text-muted">Vessel screens</p>
+          <p className="mt-1 text-2xl font-semibold text-ink">{vesselCount}</p>
+        </div>
+        <div className="bg-background p-5">
+          <p className="text-sm text-muted">Sources</p>
+          <p className="mt-1 text-2xl font-semibold text-ink">OFAC + EU</p>
+        </div>
       </section>
 
+      {/* Recent checks */}
       <section>
-        <article className="panel rounded-[2rem] p-7">
-          <div className="flex items-center justify-between gap-4">
-            <div>
-              <p className="eyebrow text-xs font-semibold text-muted">Recent Activity</p>
-              <h2 className="mt-3 font-serif text-3xl text-navy">Check Register</h2>
-            </div>
-            <Gavel className="h-8 w-8 text-accent" />
-          </div>
-          <div className="mt-6 space-y-4">
-            {recent.length > 0 ? (
-              recent.map((check) => (
-                <Link
-                  key={check.id}
-                  href={`/checks/${check.id}`}
-                  className="block rounded-[1.5rem] border border-line/90 bg-white/80 p-5 transition hover:border-navy/25 hover:bg-white"
-                >
-                  <div className="flex flex-wrap items-start justify-between gap-4">
-                    <div>
-                      <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted">
-                        {formatMode(check.mode)}
-                      </p>
-                      <h3 className="mt-2 text-lg font-semibold text-navy">{check.title}</h3>
-                    </div>
-                    <p className="text-sm text-muted">{formatDateTime(check.createdAt)}</p>
+        <div className="mb-4 flex items-center justify-between">
+          <h2 className="text-sm font-semibold text-ink">Recent checks</h2>
+          {checks.length > 5 && (
+            <Link href="/history" className="text-sm text-muted hover:text-ink">
+              View all
+            </Link>
+          )}
+        </div>
+
+        {recent.length > 0 ? (
+          <div className="divide-y divide-line overflow-hidden rounded-xl border border-line">
+            {recent.map((check) => (
+              <Link
+                key={check.id}
+                href={`/checks/${check.id}`}
+                className="flex items-center justify-between gap-4 bg-background px-5 py-4 transition hover:bg-surface"
+              >
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center gap-2">
+                    <span className="text-[11px] font-medium uppercase tracking-[0.12em] text-muted">
+                      {formatMode(check.mode)}
+                    </span>
                   </div>
-                  <p className="mt-3 line-clamp-2 text-sm leading-6 text-muted">
-                    {check.subjects.join(" • ")}
+                  <p className="mt-1 truncate text-sm font-medium text-ink">{check.title}</p>
+                  <p className="mt-1 truncate text-sm text-muted">
+                    {check.subjects.join(" · ")}
                   </p>
-                </Link>
-              ))
-            ) : (
-              <div className="rounded-[1.5rem] border border-dashed border-line bg-white/55 p-6 text-muted">
-                No checks yet. Start with a vessel transaction, an entity screen, or a PDF upload.
-              </div>
-            )}
+                </div>
+                <div className="shrink-0 text-right">
+                  <p className="text-sm text-muted">{formatDateTime(check.createdAt)}</p>
+                  {(check.confirmedMatches > 0 || check.reviewMatches > 0) && (
+                    <p className="mt-1 text-xs text-muted">
+                      {check.confirmedMatches} confirmed · {check.reviewMatches} review
+                    </p>
+                  )}
+                </div>
+              </Link>
+            ))}
           </div>
-        </article>
+        ) : (
+          <div className="rounded-xl border border-dashed border-line px-5 py-8 text-center text-sm text-muted">
+            No checks yet. Start with a vessel transaction, entity screen, or PDF upload.
+          </div>
+        )}
+      </section>
+
+      {/* Capabilities */}
+      <section className="grid gap-px overflow-hidden rounded-xl border border-line bg-line md:grid-cols-3">
+        <div className="bg-background p-5">
+          <h3 className="text-sm font-semibold text-ink">Sanctions screening</h3>
+          <p className="mt-2 text-sm leading-6 text-muted">
+            OFAC official source, EU official-first with fallback provenance. Exact, fuzzy, and linked-party matching.
+          </p>
+        </div>
+        <div className="bg-background p-5">
+          <h3 className="text-sm font-semibold text-ink">Vessel intelligence</h3>
+          <p className="mt-2 text-sm leading-6 text-muted">
+            Best-effort public-data vessel context with coverage limits clearly disclosed for legal review.
+          </p>
+        </div>
+        <div className="bg-background p-5">
+          <h3 className="text-sm font-semibold text-ink">PDF intake</h3>
+          <p className="mt-2 text-sm leading-6 text-muted">
+            Upload transaction documents. Text extraction, field normalization, and automated subject resolution.
+          </p>
+        </div>
       </section>
     </div>
   );

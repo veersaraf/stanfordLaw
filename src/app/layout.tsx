@@ -1,25 +1,25 @@
 import type { Metadata } from "next";
-import { Cormorant_Garamond, Source_Sans_3 } from "next/font/google";
+import { Inter, DM_Serif_Display } from "next/font/google";
 import Link from "next/link";
 import "flag-icons/css/flag-icons.min.css";
 import "./globals.css";
 
-const editorial = Cormorant_Garamond({
+const editorial = DM_Serif_Display({
   variable: "--font-editorial",
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
+  weight: ["400"],
 });
 
-const bodySans = Source_Sans_3({
+const bodySans = Inter({
   variable: "--font-body",
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
 });
 
 export const metadata: Metadata = {
-  title: "Maritime Sanctions Desk",
+  title: "Everos",
   description:
-    "Prototype workflow for maritime sanctions, counterparty risk, vessel intelligence, and PDF-led intake.",
+    "Maritime sanctions screening, vessel intelligence, and compliance workflow.",
 };
 
 export default function RootLayout({
@@ -33,18 +33,18 @@ export default function RootLayout({
       className={`${editorial.variable} ${bodySans.variable} h-full antialiased`}
     >
       <body className="min-h-full font-sans text-ink">
-        <div className="pointer-events-none fixed inset-0 -z-10 bg-[radial-gradient(circle_at_top,_rgba(17,82,111,0.18),_transparent_28%),radial-gradient(circle_at_80%_20%,_rgba(193,111,53,0.14),_transparent_24%),linear-gradient(180deg,_#f3ecde_0%,_#f7f4ee_48%,_#fbfaf7_100%)]" />
-        <header className="sticky top-0 z-30 border-b border-line/80 bg-surface/80 backdrop-blur-xl">
-          <div className="mx-auto flex w-full max-w-7xl items-center justify-between px-6 py-4 lg:px-10">
-            <Link href="/" className="flex items-baseline gap-3">
-              <span className="font-serif text-3xl leading-none tracking-tight text-navy">
-                Maritime
-              </span>
-              <span className="rounded-full border border-navy/15 bg-white/60 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.28em] text-navy/70">
-                Sanctions Desk
+        <header className="sticky top-0 z-30 border-b border-line bg-background/95 backdrop-blur-sm">
+          <div className="mx-auto flex w-full max-w-[960px] items-center justify-between px-6 py-4">
+            <Link href="/" className="flex items-center gap-3">
+              <svg width="24" height="24" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M6 8L16 4L26 8V18C26 23.5 21.5 28 16 28C10.5 28 6 23.5 6 18V8Z" stroke="#209483" strokeWidth="2" strokeLinejoin="round"/>
+                <path d="M12 16L15 19L21 13" stroke="#5acdbd" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+              <span className="text-lg font-semibold tracking-[-0.02em] text-ink">
+                Everos
               </span>
             </Link>
-            <nav className="flex items-center gap-2 text-sm font-semibold text-navy/80">
+            <nav className="flex items-center gap-1 text-sm">
               <Link
                 href="/instructions"
                 className="rounded-full px-4 py-2 transition hover:bg-white/70"
@@ -58,8 +58,14 @@ export default function RootLayout({
                 Build Notes
               </Link>
               <Link
+                href="/checks/new"
+                className="rounded-lg border border-primary bg-white px-4 py-2 font-medium text-primary shadow-sm transition hover:bg-primary hover:text-white"
+              >
+                New check
+              </Link>
+              <Link
                 href="/history"
-                className="rounded-full px-4 py-2 transition hover:bg-white/70"
+                className="rounded-lg px-4 py-2 font-medium text-muted transition hover:bg-surface hover:text-ink"
               >
                 History
               </Link>
@@ -72,7 +78,7 @@ export default function RootLayout({
             </nav>
           </div>
         </header>
-        <main className="mx-auto flex w-full max-w-7xl flex-1 flex-col px-6 py-8 lg:px-10 lg:py-12">
+        <main className="mx-auto flex w-full max-w-[960px] flex-1 flex-col px-6 py-8 lg:py-10">
           {children}
         </main>
       </body>

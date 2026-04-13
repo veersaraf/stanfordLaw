@@ -10,10 +10,10 @@ export function SubmitButton({ label }: { label: string }) {
     <button
       type="submit"
       disabled={pending}
-      className="inline-flex items-center justify-center gap-2 rounded-full bg-navy px-6 py-3 text-sm font-semibold text-white transition hover:bg-navy/90 disabled:cursor-not-allowed disabled:bg-navy/50"
+      className="inline-flex shrink-0 items-center justify-center gap-2 rounded-lg border border-primary bg-white px-5 py-2.5 text-sm font-medium text-primary shadow-sm transition hover:bg-primary hover:text-white disabled:cursor-not-allowed disabled:opacity-40"
     >
-      {pending ? <LoaderCircle className="h-4 w-4 animate-spin" /> : null}
-      {pending ? "Working..." : label}
+      {pending ? <LoaderCircle className="h-3.5 w-3.5 animate-spin" /> : null}
+      {pending ? "Running..." : label}
     </button>
   );
 }

@@ -81,15 +81,28 @@ export function buildScreeningSubjects(submission: CheckSubmission) {
       addresses: dedupeStrings([submission.vessel.deliveryPlace]),
     });
 
-    for (const [label, value] of [
+    const operatorName = submission.vessel.operatorName;
+    const managerName = submission.vessel.managerName;
+    const operatorManagerSame =
+      operatorName &&
+      managerName &&
+      operatorName.toLowerCase() === managerName.toLowerCase();
+
+    const partyEntries: Array<[string, string | undefined]> = [
       ["Owner", submission.vessel.ownerName],
-      ["Operator", submission.vessel.operatorName],
-      ["Manager", submission.vessel.managerName],
+      ...(operatorManagerSame
+        ? [["Operator / Manager", operatorName] as [string, string]]
+        : [
+            ["Operator", operatorName] as [string, string | undefined],
+            ["Manager", managerName] as [string, string | undefined],
+          ]),
       ["Seller", submission.vessel.sellerName],
       ["Buyer", submission.vessel.buyerName],
       ["Guarantor", submission.vessel.guarantor],
       ["Deposit Holder", submission.vessel.depositHolder],
-    ] as const) {
+    ];
+
+    for (const [label, value] of partyEntries) {
       if (!value) {
         continue;
       }
@@ -135,13 +148,26 @@ export function buildScreeningSubjects(submission: CheckSubmission) {
       });
     }
 
-    for (const [label, value] of [
+    const pdfOperator = submission.pdf.parsedFields.operatorName;
+    const pdfManager = submission.pdf.parsedFields.managerName;
+    const pdfOpMgrSame =
+      pdfOperator &&
+      pdfManager &&
+      pdfOperator.toLowerCase() === pdfManager.toLowerCase();
+
+    const pdfPartyEntries: Array<[string, string | undefined]> = [
       ["PDF Owner", submission.pdf.parsedFields.ownerName],
-      ["PDF Operator", submission.pdf.parsedFields.operatorName],
-      ["PDF Manager", submission.pdf.parsedFields.managerName],
+      ...(pdfOpMgrSame
+        ? [["PDF Operator / Manager", pdfOperator] as [string, string]]
+        : [
+            ["PDF Operator", pdfOperator] as [string, string | undefined],
+            ["PDF Manager", pdfManager] as [string, string | undefined],
+          ]),
       ["PDF Seller", submission.pdf.parsedFields.sellerName],
       ["PDF Buyer", submission.pdf.parsedFields.buyerName],
-    ] as const) {
+    ];
+
+    for (const [label, value] of pdfPartyEntries) {
       if (!value) {
         continue;
       }

@@ -22,19 +22,19 @@ const modes: Array<{
   {
     id: "vessel",
     title: "Vessel + Transaction",
-    description: "Manual BIMCO-style intake for a vessel deal and counterparties.",
+    description: "BIMCO-style intake with counterparties",
     icon: ShipWheel,
   },
   {
     id: "entity",
     title: "Entity / Individual",
-    description: "Counterparty screening for a company, director, or person.",
+    description: "Screen a company, director, or person",
     icon: Radar,
   },
   {
     id: "pdf",
     title: "PDF Upload",
-    description: "Upload a transaction document and let the system normalize it first.",
+    description: "Upload and extract from a document",
     icon: FileText,
   },
 ];
@@ -47,12 +47,8 @@ function FieldError({
   name: string;
 }) {
   const fieldErrors = errors?.[name];
-
-  if (!fieldErrors || fieldErrors.length === 0) {
-    return null;
-  }
-
-  return <p className="mt-2 text-sm text-danger">{fieldErrors[0]}</p>;
+  if (!fieldErrors || fieldErrors.length === 0) return null;
+  return <p className="mt-1.5 text-sm text-danger">{fieldErrors[0]}</p>;
 }
 
 function Label({
@@ -65,7 +61,7 @@ function Label({
   return (
     <label
       htmlFor={htmlFor}
-      className="mb-2 block text-sm font-semibold tracking-[0.02em] text-navy"
+      className="mb-1.5 block text-sm font-medium text-ink"
     >
       {children}
     </label>
@@ -78,55 +74,51 @@ export function CheckIntakeForm() {
   const [imoError, setImoError] = useState<string | null>(null);
 
   return (
-    <form action={formAction} className="space-y-8">
+    <form action={formAction} className="flex flex-col gap-5">
       <input type="hidden" name="mode" value={mode} />
 
-      <div className="grid gap-3 lg:grid-cols-3">
+      {/* Mode selector */}
+      <div className="grid gap-px overflow-hidden rounded-xl border border-line bg-line md:grid-cols-3">
         {modes.map(({ id, title, description, icon: Icon }) => (
           <button
             key={id}
             type="button"
             onClick={() => setMode(id)}
             className={cn(
-              "rounded-[1.6rem] border p-5 text-left transition",
+              "p-4 text-left transition",
               mode === id
-                ? "border-navy bg-navy text-white shadow-[0_20px_40px_rgba(22,61,83,0.16)]"
-                : "border-line bg-white/70 text-navy hover:border-navy/20 hover:bg-white",
+                ? "bg-primary text-white"
+                : "bg-background text-ink hover:bg-surface",
             )}
           >
-            <Icon className="h-5 w-5" />
-            <h3 className="mt-4 font-serif text-2xl leading-tight">{title}</h3>
-            <p
-              className={cn(
-                "mt-2 text-sm leading-6",
-                mode === id ? "text-white/75" : "text-muted",
-              )}
-            >
+            <Icon className={cn("h-4 w-4", mode === id ? "text-white/70" : "text-muted")} />
+            <h3 className="mt-2.5 text-sm font-semibold">{title}</h3>
+            <p className={cn("mt-1 text-xs leading-5", mode === id ? "text-white/60" : "text-muted")}>
               {description}
             </p>
           </button>
         ))}
       </div>
 
-      <div className="rounded-[1.8rem] border border-line bg-white/75 p-6">
-        <Label htmlFor="title">Internal matter title</Label>
+      {/* Title field */}
+      <div className="rounded-xl border border-line bg-background p-4">
+        <Label htmlFor="title">Matter title</Label>
         <input
           id="title"
           name="title"
           className="field"
-          placeholder="Example: M/T Baltic Dawn acquisition review"
+          placeholder="e.g. M/T Baltic Dawn acquisition review"
         />
-        <p className="mt-2 text-sm text-muted">
-          Optional, but useful if you want a more readable check title in history.
-        </p>
+        <p className="mt-1.5 text-xs text-muted">Optional. Auto-generated if left blank.</p>
       </div>
 
       {state.message ? (
-        <div className="rounded-[1.6rem] border border-danger/20 bg-danger/8 px-5 py-4 text-sm text-danger">
+        <div className="rounded-xl border border-danger/20 bg-danger/5 px-4 py-3 text-sm text-danger">
           {state.message}
         </div>
       ) : null}
 
+      {/* Vessel mode fields */}
       {mode === "vessel" ? (
         <section className="grid gap-5 rounded-[2rem] border border-line bg-white/75 p-6 md:grid-cols-2">
           <div className="md:col-span-2">
@@ -240,109 +232,92 @@ export function CheckIntakeForm() {
         </section>
       ) : null}
 
+      {/* Entity mode fields */}
       {mode === "entity" ? (
-        <section className="grid gap-5 rounded-[2rem] border border-line bg-white/75 p-6 md:grid-cols-2">
-          <div className="md:col-span-2">
-            <p className="eyebrow text-xs font-semibold text-muted">Entity Intake</p>
-            <h2 className="mt-2 font-serif text-3xl text-navy">
-              Screen a company or individual
-            </h2>
-          </div>
-
-          <div>
-            <Label htmlFor="subjectName">Name</Label>
-            <input id="subjectName" name="subjectName" className="field" />
-            <FieldError errors={state.fieldErrors} name="subjectName" />
-          </div>
-
-          <div>
-            <Label htmlFor="subjectType">Subject type</Label>
-            <select id="subjectType" name="subjectType" className="field" defaultValue="company">
-              <option value="company">Company</option>
-              <option value="individual">Individual</option>
-            </select>
-          </div>
-
-          <div>
-            <Label htmlFor="companyNumber">Company registration number</Label>
-            <input id="companyNumber" name="companyNumber" className="field" />
-          </div>
-
-          <div>
-            <Label htmlFor="nationality">Country / nationality</Label>
-            <input id="nationality" name="nationality" className="field" />
-          </div>
-
-          <div className="md:col-span-2">
-            <Label htmlFor="address">Address</Label>
-            <input id="address" name="address" className="field" />
-          </div>
-
-          <div className="md:col-span-2">
-            <Label htmlFor="aliases">Known aliases</Label>
-            <input
-              id="aliases"
-              name="aliases"
-              className="field"
-              placeholder="Comma-separated aliases"
-            />
-          </div>
-
-          <div className="md:col-span-2">
-            <Label htmlFor="notes">Notes</Label>
-            <textarea
-              id="notes"
-              name="notes"
-              rows={5}
-              className="field resize-none"
-              placeholder="Anything already known about ownership, sector, or possible connections."
-            />
+        <section className="rounded-xl border border-line bg-background p-4">
+          <p className="mb-4 text-sm font-semibold text-ink">Entity details</p>
+          <div className="grid gap-4 md:grid-cols-2">
+            <div>
+              <Label htmlFor="subjectName">Name</Label>
+              <input id="subjectName" name="subjectName" className="field" />
+              <FieldError errors={state.fieldErrors} name="subjectName" />
+            </div>
+            <div>
+              <Label htmlFor="subjectType">Type</Label>
+              <select id="subjectType" name="subjectType" className="field" defaultValue="company">
+                <option value="company">Company</option>
+                <option value="individual">Individual</option>
+              </select>
+            </div>
+            <div>
+              <Label htmlFor="companyNumber">Registration number</Label>
+              <input id="companyNumber" name="companyNumber" className="field" />
+            </div>
+            <div>
+              <Label htmlFor="nationality">Country / nationality</Label>
+              <input id="nationality" name="nationality" className="field" />
+            </div>
+            <div className="md:col-span-2">
+              <Label htmlFor="address">Address</Label>
+              <input id="address" name="address" className="field" />
+            </div>
+            <div className="md:col-span-2">
+              <Label htmlFor="aliases">Known aliases</Label>
+              <input id="aliases" name="aliases" className="field" placeholder="Comma-separated" />
+            </div>
+            <div className="md:col-span-2">
+              <Label htmlFor="notes">Notes</Label>
+              <textarea
+                id="notes"
+                name="notes"
+                rows={3}
+                className="field resize-none"
+                placeholder="Ownership, sector, or known connections."
+              />
+            </div>
           </div>
         </section>
       ) : null}
 
+      {/* PDF mode fields */}
       {mode === "pdf" ? (
-        <section className="grid gap-5 rounded-[2rem] border border-line bg-white/75 p-6">
-          <div>
-            <p className="eyebrow text-xs font-semibold text-muted">PDF Intake</p>
-            <h2 className="mt-2 font-serif text-3xl text-navy">
-              Upload a transaction document first
-            </h2>
-            <p className="mt-3 max-w-3xl text-base leading-7 text-muted">
-              The app stores the PDF, extracts text, resolves obvious fields like vessel name and IMO where possible, and feeds the normalized payload into the sanctions and vessel lanes.
-            </p>
-          </div>
-
-          <div>
-            <Label htmlFor="pdfFile">PDF file</Label>
-            <input
-              id="pdfFile"
-              name="pdfFile"
-              type="file"
-              accept=".pdf,application/pdf"
-              className="field file:mr-4 file:rounded-full file:border-0 file:bg-navy file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white"
-            />
-            <FieldError errors={state.fieldErrors} name="pdfFile" />
-          </div>
-
-          <div>
-            <Label htmlFor="pdfNote">Reviewer note</Label>
-            <textarea
-              id="pdfNote"
-              name="pdfNote"
-              rows={4}
-              className="field resize-none"
-              placeholder="What matters most in this upload, or what we should pay attention to first."
-            />
+        <section className="rounded-xl border border-line bg-background p-4">
+          <p className="mb-1 text-sm font-semibold text-ink">Upload document</p>
+          <p className="mb-4 text-xs leading-5 text-muted">
+            PDF is stored, text extracted, and fields normalized into the screening pipeline.
+          </p>
+          <div className="space-y-4">
+            <div>
+              <Label htmlFor="pdfFile">PDF file</Label>
+              <input
+                id="pdfFile"
+                name="pdfFile"
+                type="file"
+                accept=".pdf,application/pdf"
+                className="field text-sm file:mr-3 file:rounded-md file:border-0 file:bg-primary file:px-3 file:py-1.5 file:text-xs file:font-medium file:text-white"
+              />
+              <FieldError errors={state.fieldErrors} name="pdfFile" />
+            </div>
+            <div>
+              <Label htmlFor="pdfNote">Reviewer note</Label>
+              <textarea
+                id="pdfNote"
+                name="pdfNote"
+                rows={3}
+                className="field resize-none"
+                placeholder="What to pay attention to in this document."
+              />
+            </div>
           </div>
         </section>
       ) : null}
 
-      <div className="flex flex-wrap items-center justify-between gap-4 rounded-[1.8rem] border border-line bg-white/75 px-6 py-5">
-        <p className="max-w-2xl text-sm leading-6 text-muted">
-          This run imports current sanctions data as needed, stores structured results in Postgres, and creates a presentation-ready PDF automatically. Managed-agent session creation is optional when the Anthropic credentials are present.
+      {/* Submit */}
+      <div className="flex items-center justify-between gap-4 rounded-xl border border-line bg-background px-4 py-3">
+        <p className="text-xs leading-5 text-muted">
+          Imports live sanctions data, screens all subjects, and generates a PDF report.
         </p>
-        <SubmitButton label="Create check" />
+        <SubmitButton label="Run check" />
       </div>
     </form>
   );
