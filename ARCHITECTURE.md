@@ -7,7 +7,7 @@ This document serves as a critical, living template designed to equip agents wit
 The project is a single Next.js (App Router) application — no split frontend/backend directories. Server-side logic lives alongside React components inside `src/`, with Next.js server actions and route handlers acting as the backend.
 
 ```
-stanfordLaw/
+maritime-sanctions-desk/
 ├── src/
 │   ├── app/                          # Next.js App Router (pages + API)
 │   │   ├── layout.tsx                # Root layout, fonts, header/nav
@@ -219,9 +219,9 @@ The backend is not split into microservices — it is the server-side half of th
 
 ## 10. Project Identification
 
-- **Project Name:** Maritime Sanctions Desk (package name: `stanford-law`)
-- **Repository URL:** Local repository at `/home/joshu/code/stanfordLaw` (no remote URL recorded here).
-- **Primary Contact/Team:** Joshua Sorkin (git author).
+- **Project Name:** Maritime Sanctions Desk
+- **Repository URL:** https://github.com/veersaraf/maritime-sanctions-desk
+- **Primary Contact/Team:** Veer Saraf.
 - **Date of Last Update:** 2026-04-12
 
 ## 11. Glossary / Acronyms
